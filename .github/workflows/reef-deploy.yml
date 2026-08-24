@@ -11,5 +11,5 @@ permissions:
 
 jobs:
   deploy:
-    if: github.repository != 'MEA-RUN/subject-template'
+    if: ${{ !github.event.repository.is_template }}
     uses: MEA-RUN/actions/.github/workflows/reef-deploy.yml@main
