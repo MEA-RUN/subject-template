@@ -1,32 +1,60 @@
 # Subject template
 
-Ce dépôt est le point de départ d'un sujet Manta Academy. Aucun projet Nuxt
-n'est nécessaire ici : Reef construit et publie le site à partir du contenu.
+Ce dépôt est le point de départ d'un sujet Manta Academy. L'étudiant n'a pas
+besoin de connaître Nuxt ni de gérer un second dépôt : chaque push sur `main`
+reconstruit le site et remplace la branche `gh-pages` de ce même dépôt.
 
 ## Créer un sujet
 
 1. Créez un dépôt depuis ce template.
-2. Ajoutez les versions françaises dans `subjects/fr` et anglaises dans
+2. Ajoutez les sujets français dans `subjects/fr` et anglais dans
    `subjects/en`.
 3. Placez les images et autres fichiers dans `assets`.
-4. Copiez `metadata.example.yml` vers `metadata.yml` et listez les outils à
-   afficher dans le panneau droit. Le fichier peut contenir `tools: []`.
-5. Lancez manuellement l'action **Create Reef site**.
+4. Copiez `metadata.example.yml` vers `metadata.yml` et configurez les outils.
+5. Poussez sur `main`.
 
-Le site généré porte par défaut le nom `<nom-du-dépôt>-site`. Il est recréable :
-les sujets, assets et outils doivent donc toujours être modifiés dans ce dépôt,
-jamais dans le dépôt généré.
+La première fois, configurez GitHub Pages sur **Deploy from a branch**, branche
+`gh-pages`, dossier `/`. Dans les paramètres Actions du dépôt, les workflows
+doivent disposer des permissions de lecture et d'écriture.
 
-## Mettre le site à jour
+## Outils
 
-- **Update Reef content** remplace les sujets et assets du site généré.
-- **Update Reef tools** retélécharge tous les outils déclarés dans
-  `metadata.yml`.
+Un outil distant est récupéré depuis un dépôt GitHub public :
 
-Les workflows nécessitent les secrets d'organisation `REEF_APP_CLIENT_ID` et
-`REEF_APP_PRIVATE_KEY`. L'application GitHub doit être installée sur les dépôts
-source et générés avec les permissions `Administration: write`,
-`Contents: write`, `Pages: write` et `Metadata: read`.
+```yaml
+tools:
+  - id: match
+    repository: MEA-RUN/match
+    ref: main
+```
+
+Un outil propre au sujet peut être placé directement dans le dépôt :
+
+```text
+tools/
+  mon-outil/
+    index.html
+    style.css
+    script.js
+```
+
+```yaml
+tools:
+  - id: mon-outil
+    path: tools/mon-outil
+    name: Mon outil
+```
+
+Les assets référencés par `index.html` doivent utiliser des chemins relatifs.
+Les champs facultatifs `entrypoint`, `icon`, `description`, `version` et
+`category` peuvent être déclarés dans `metadata.yml`.
+
+## Sécurité des dépôts d'organisation
+
+Le déploiement vérifie explicitement que l'auteur du push possède au minimum le
+droit d'écriture sur le dépôt. Une pull request provenant d'un fork ne publie
+rien avant sa validation et son merge sur `main`. Protégez également `main`
+avec les règles de revue adaptées à votre organisation.
 
 ## Structure
 
@@ -36,6 +64,5 @@ metadata.yml
 subjects/
   en/
   fr/
+tools/
 ```
-
-Un exemple minimal de sujet est disponible dans chaque dossier de langue.
