@@ -1,25 +1,37 @@
-# Subject template
+# Manta Academy subject template
 
-Ce dépôt est le point de départ d'un sujet Manta Academy. L'étudiant n'a pas
-besoin de connaître Nuxt ni de gérer un second dépôt : chaque push sur `main`
-reconstruit le site et remplace la branche `gh-pages` de ce même dépôt.
+Use this repository template to create a publishable Manta Academy subject.
+You only need to write Markdown, add assets, and configure optional interactive
+tools. You do not need to know Nuxt or maintain a separate website repository.
 
-## Créer un sujet
+Every push to `main` rebuilds the website and replaces the `gh-pages` branch in
+the same repository.
 
-1. Créez un dépôt depuis ce template.
-2. Ajoutez les sujets français dans `subjects/fr` et anglais dans
-   `subjects/en`.
-3. Placez les images et autres fichiers dans `assets`.
-4. Copiez `metadata.example.yml` vers `metadata.yml` et configurez les outils.
-5. Poussez sur `main`.
+## Create a subject
 
-La première fois, configurez GitHub Pages sur **Deploy from a branch**, branche
-`gh-pages`, dossier `/`. Dans les paramètres Actions du dépôt, les workflows
-doivent disposer des permissions de lecture et d'écriture.
+1. Create a repository from this template.
+2. Add English subjects to `subjects/en` and French subjects to `subjects/fr`.
+3. Put images and other static files in `assets`.
+4. Copy `metadata.example.yml` to `metadata.yml` and configure any tools.
+5. Push your changes to `main`.
 
-## Outils
+For the first deployment, configure GitHub Pages to use **Deploy from a
+branch**, select the `gh-pages` branch, and select the `/` folder. In the
+repository's Actions settings, grant workflows read and write permissions.
 
-Un outil distant est récupéré depuis un dépôt GitHub public :
+## Subject content
+
+Write subjects as Markdown files. Reef enables localization automatically:
+
+- keep only `subjects/en` for an English-only site;
+- keep only `subjects/fr` for a French-only site;
+- keep both directories for a bilingual site with a locale switcher.
+
+Assets keep their relative structure when copied to the generated website.
+
+## Remote tools
+
+A remote tool is downloaded from a public GitHub repository:
 
 ```yaml
 tools:
@@ -28,37 +40,54 @@ tools:
     ref: main
 ```
 
-Un outil propre au sujet peut être placé directement dans le dépôt :
+`ref` may be a branch, tag, or commit SHA.
+
+## Local tools
+
+A tool specific to the subject can live directly in the repository:
 
 ```text
 tools/
-  mon-outil/
+  my-tool/
     index.html
     style.css
     script.js
 ```
 
+Reference it from `metadata.yml`:
+
 ```yaml
 tools:
-  - id: mon-outil
-    path: tools/mon-outil
-    name: Mon outil
+  - id: my-tool
+    path: tools/my-tool
+    name: My tool
 ```
 
-Les assets référencés par `index.html` doivent utiliser des chemins relatifs.
-Les champs facultatifs `entrypoint`, `icon`, `description`, `version` et
-`category` peuvent être déclarés dans `metadata.yml`.
+Files referenced by `index.html` must use relative paths. Optional tool fields
+include `entrypoint`, `icon`, `description`, `version`, and `category`.
 
-## Sécurité des dépôts d'organisation
+## Use a tool in Markdown
 
-Le déploiement vérifie explicitement que l'auteur du push possède au minimum le
-droit d'écriture sur le dépôt. Une pull request provenant d'un fork ne publie
-rien avant sa validation et son merge sur `main`. Protégez également `main`
-avec les règles de revue adaptées à votre organisation.
+Open a configured tool in Reef's right-hand panel with the `tools` MDC
+component:
 
-## Structure
+```mdc
+:::tools{id="match"}
+Open the matching tool
+:::
+```
+
+## Organization repository security
+
+For organization-owned repositories, deployment verifies that the actor has at
+least write access. A pull request from a fork cannot publish anything until it
+has been reviewed and merged into `main`. Protect `main` with the review rules
+required by your organization.
+
+## Repository structure
 
 ```text
+.github/workflows/reef-deploy.yml
 assets/
 metadata.yml
 subjects/
